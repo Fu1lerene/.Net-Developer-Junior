@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+option csharp_namespace = "Homework2.ProductService.Api";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package product;
+
+
+service ProductService {
+  rpc AddProduct (AddProductRequest) returns (AddProductResponse){
+    option (google.api.http) = {
+      post: "/v1/product/AddProduct"
+      body: "*"
+    };
+  };
+  rpc GetAllProducts(google.protobuf.Empty) returns (ListProductResponse){
+    option (google.api.http) = {
+      get: '/v1/product/GetAllProducts'
+    };
+  };
+  rpc GetFilteredList(GetFilteredListRequest) returns (ListProductResponse){
+    option (google.api.http) = {
+      get: '/v1/product/GetFilteredList'
+    };
+  };
+  rpc SetPrice(SetPriceRequest) returns (SetPriceResponse){
+    option (google.api.http) = {
+      put: '/v1/product/SetPrice'
+    };
+  };
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse){
+    option (google.api.http) = {
+      get: '/v1/product/GetProduct'
+    };
+  };
+}
+
+message AddProductRequest {
+  string name = 1;
+  double price = 2;
+  double weight = 3;
+  GrpcProductType product_type = 4;
+  google.protobuf.Timestamp date_creation = 5;
+  int64 warehouse_id = 6;
+}
+
+message AddProductResponse{
+  string response = 1;
+}
+
+
+message ListProductResponse {
+  repeated GrpcProductModel products = 1;
+}
+
+message GetFilteredListRequest{
+  google.protobuf.Timestamp start_date = 1;
+  google.protobuf.Timestamp end_date = 2;
+  GrpcProductType product_type = 3;
+  int64 warehouse_id = 4;
+  int32 page = 5;
+  int32 page_size = 6;
+}
+
+
+message SetPriceRequest {
+  int64 product_id = 1;
+  double price = 2;
+}
+
+message SetPriceResponse{
+  string response = 1;
+}
+
+
+message GetProductRequest {
+  int64 product_id = 1;
+}
+
+message GetProductResponse {
+  GrpcProductModel product = 1;
+}
+
+message GrpcProductModel{
+    int64 product_id = 1;
+    string name = 2;
+    double price = 3;
+    double weight = 4;
+    GrpcProductType product_type = 5;
+    google.protobuf.Timestamp date_creation = 6;
+    int64 warehouse_id = 7;
+  }
+
+enum GrpcProductType {
+  DEFAULT = 0;
+  GENERAL = 1;
+  CHEMICALS = 2;
+  APPLIANCES = 3;
+  GROCERIES = 4;
+}
